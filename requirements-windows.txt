@@ -1,0 +1,15 @@
+# For Windows machines where Smart App Control blocks the compiled files of very new releases.
+# Conservative, widely downloaded versions with Windows wheels for Python 3.11 / 3.12.
+# After installing, RETRAIN: scikit-learn models do not load reliably across versions.
+numpy==1.26.4
+scipy==1.13.1
+pandas==2.2.3
+scikit-learn==1.5.2
+xgboost==2.1.3
+joblib==1.4.2
+nltk==3.9.1
+fastapi>=0.110
+uvicorn>=0.30
+openpyxl>=3.1
+pytest>=8.0
+httpx>=0.27

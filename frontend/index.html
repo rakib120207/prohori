@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prohori · প্রহরী — Bangla AI-text detector</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07080b; --panel:#0e1117; --panel2:#131822; --line:#1f2733; --text:#e8ecf3; --muted:#8893a5;
+  --ai:#ff7a59; --human:#4ade9a; --mid:#e6c55a; --accent:#7c9cff;
+  --font:'Inter','Noto Sans Bengali',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0}
+body{background:var(--bg);color:var(--text);font-family:var(--font);line-height:1.55;min-height:100vh;
+  background-image:radial-gradient(900px 400px at 50% -120px,#18223b 0%,transparent 70%)}
+.wrap{max-width:1040px;margin:0 auto;padding:36px 20px 80px}
+header{display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;margin-bottom:6px}
+h1{font-size:28px;font-weight:700;letter-spacing:.14em}
+h1 span{font-family:'Noto Sans Bengali';letter-spacing:0;color:var(--accent);margin-left:10px;font-weight:500}
+.tag{color:var(--muted);font-size:14px}
+.modes{display:inline-flex;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:3px;margin:22px 0 16px}
+.modes button{background:none;border:0;color:var(--muted);padding:7px 16px;border-radius:8px;font:inherit;font-size:13px;cursor:pointer}
+.modes button.on{background:var(--panel2);color:var(--text)}
+.grid{display:grid;gap:16px}
+.grid.two{grid-template-columns:1fr 1fr}
+@media(max-width:780px){.grid.two{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px}
+textarea{width:100%;min-height:200px;resize:vertical;background:var(--panel2);color:var(--text);border:1px solid var(--line);
+  border-radius:12px;padding:14px;font:inherit;font-size:16px;line-height:1.7;outline:none}
+textarea:focus{border-color:var(--accent)}
+.row{display:flex;justify-content:space-between;align-items:center;margin-top:10px;gap:10px;flex-wrap:wrap}
+.count{color:var(--muted);font-size:12px}
+.btn{background:var(--accent);color:#08101f;border:0;border-radius:10px;padding:10px 22px;font:inherit;font-weight:600;cursor:pointer}
+.btn:disabled{opacity:.5;cursor:wait}
+.btn.ghost{background:none;color:var(--muted);border:1px solid var(--line);font-weight:500}
+.result{margin-top:16px}
+.gauge{display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+.ring{--p:0;--c:var(--mid);width:132px;height:132px;border-radius:50%;flex:none;display:grid;place-items:center;
+  background:conic-gradient(var(--c) calc(var(--p)*1%),var(--panel2) 0);transition:background .6s}
+.ring div{width:104px;height:104px;border-radius:50%;background:var(--panel);display:grid;place-items:center;text-align:center}
+.ring b{font-size:30px;line-height:1}.ring small{display:block;color:var(--muted);font-size:10px;letter-spacing:.08em;margin-top:2px}
+.band{font-size:18px;font-weight:600}
+.detail{color:var(--muted);font-size:13px;max-width:440px;margin-top:3px}
+.why{margin-top:18px;border-top:1px solid var(--line);padding-top:14px}
+.why h3{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;font-weight:600}
+.reason{margin-bottom:12px}
+.reason .top{display:flex;justify-content:space-between;font-size:14px;font-weight:600;gap:8px}
+.chip{font-size:11px;font-weight:600;padding:2px 8px;border-radius:99px;white-space:nowrap}
+.chip.ai{background:#3a1d14;color:var(--ai)}.chip.human{background:#13301f;color:var(--human)}
+.bar{height:5px;background:var(--panel2);border-radius:9px;margin:6px 0}
+.bar i{display:block;height:100%;border-radius:9px}
+.reason p{color:var(--muted);font-size:12.5px}
+.ex{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.ex span{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:1px 8px;font-size:13px}
+.warn{background:#2a2410;border:1px solid #4a3f14;color:#e9d58a;border-radius:10px;padding:8px 12px;font-size:12.5px;margin-top:10px}
+.err{background:#2a1414;border:1px solid #4a1f1f;color:#ff9a9a;border-radius:10px;padding:10px 14px;font-size:13px;margin-top:12px}
+.disc{margin-top:14px;color:var(--muted);font-size:12px;border-left:2px solid var(--line);padding-left:10px}
+details{margin-top:12px;color:var(--muted);font-size:12px}
+details table{margin-top:6px;border-collapse:collapse}details td{padding:2px 14px 2px 0}
+footer{margin-top:34px;color:var(--muted);font-size:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>PROHORI<span>প্রহরী</span></h1>
+    <p class="tag">Does this Bangla text read like a person or a language model? A probability and the reasons, never a verdict.</p>
+  </header>
+
+  <div class="modes" role="tablist">
+    <button id="m-single" class="on">Analyze</button>
+    <button id="m-compare">Compare two texts</button>
+  </div>
+
+  <div id="single" class="grid">
+    <div class="card"><div id="slot0"></div></div>
+  </div>
+  <div id="compare" class="grid two" style="display:none">
+    <div class="card"><div id="slotA"></div></div>
+    <div class="card"><div id="slotB"></div></div>
+  </div>
+  <div id="cmp-actions" class="row" style="display:none;justify-content:center">
+    <button class="btn" id="cmp-go">Analyze both</button>
+  </div>
+
+  <footer>
+    Built on sentence rhythm, predictability and vocabulary statistics + XGBoost + SHAP. No language model is called when you press Analyze.
+    False positives are possible at any threshold: use a high score to start a conversation, not to accuse.
+  </footer>
+</div>
+
+<script src="config.js"></script>
+<script>
+const API = (window.PROHORI_API || "").replace(/\/$/, "");
+const $ = (s, r = document) => r.querySelector(s);
+
+function words(t){ return (t.trim().match(/\S+/g) || []).length; }
+function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function panel(root, {title, withButton}) {
+  root.innerHTML = `
+    ${title ? `<div class="count" style="margin-bottom:8px">${esc(title)}</div>` : ""}
+    <textarea placeholder="এখানে বাংলা লেখা পেস্ট করুন…  (Paste Bangla text here — 50+ words works best)"></textarea>
+    <div class="row">
+      <span class="count"><span class="wc">0</span> words</span>
+      <span>
+        <button class="btn ghost clr">Clear</button>
+        ${withButton ? '<button class="btn go">Analyze</button>' : ""}
+      </span>
+    </div>
+    <div class="out"></div>`;
+  const ta = $("textarea", root), wc = $(".wc", root);
+  ta.addEventListener("input", () => wc.textContent = words(ta.value));
+  $(".clr", root).onclick = () => { ta.value = ""; wc.textContent = 0; $(".out", root).innerHTML = ""; };
+  const api = { ta, out: $(".out", root), run: () => analyze(api) };
+  if (withButton) $(".go", root).onclick = () => analyze(api, $(".go", root));
+  return api;
+}
+
+async function analyze(p, btn) {
+  const text = p.ta.value.trim();
+  if (!text) { p.out.innerHTML = `<div class="err">Paste some text first.</div>`; return; }
+  if (btn) { btn.disabled = true; btn.textContent = "Analyzing…"; }
+  p.out.innerHTML = "";
+  try {
+    const r = await fetch(`${API}/analyze`, {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({text})});
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(j.detail || `Request failed (${r.status})`);
+    p.out.innerHTML = render(j);
+    requestAnimationFrame(() => { const ring = $(".ring", p.out); if (ring) ring.style.setProperty("--p", Math.round(j.ai_probability * 100)); });
+  } catch (e) {
+    p.out.innerHTML = `<div class="err">${esc(e.message)}</div>`;
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = "Analyze"; }
+  }
+}
+
+function render(j) {
+  const pct = Math.round(j.ai_probability * 100);
+  const color = j.band.key === "review" ? "var(--ai)" : j.band.key === "human_like" ? "var(--human)" : "var(--mid)";
+  const reasons = j.reasons.map(r => `
+    <div class="reason">
+      <div class="top"><span>${esc(r.label)}</span>
+        <span class="chip ${r.direction}">${r.direction === "ai" ? "toward AI-like" : "toward human-like"} · ${r.impact}%</span></div>
+      <div class="bar"><i style="width:${Math.max(4, r.impact)}%;background:${r.direction === "ai" ? "var(--ai)" : "var(--human)"}"></i></div>
+      <p>${esc(r.text)}</p>
+      ${r.examples && r.examples.length ? `<div class="ex">${r.examples.map(e => `<span>${esc(e)}</span>`).join("")}</div>` : ""}
+    </div>`).join("");
+  const warns = j.warnings.map(w => `<div class="warn">${esc(w)}</div>`).join("");
+  const feats = Object.entries(j.features).map(([k, v]) => `<tr><td>${esc(k)}</td><td>${v}</td></tr>`).join("");
+  return `
+  <div class="result">
+    <div class="gauge">
+      <div class="ring" style="--c:${color}"><div><span><b>${pct}%</b><small>AI-LIKELIHOOD</small></span></div></div>
+      <div><div class="band" style="color:${color}">${esc(j.band.label)}</div><div class="detail">${esc(j.band.detail)}</div>
+      <div class="count" style="margin-top:6px">${j.stats.words} words · ${j.stats.sentences} sentences</div></div>
+    </div>
+    ${warns}
+    <div class="why"><h3>Why this score</h3>${reasons}</div>
+    <details><summary>All measured features</summary><table>${feats}</table></details>
+    <div class="disc">${esc(j.disclaimer)}</div>
+  </div>`;
+}
+
+// ----- wiring -----
+const single = panel($("#slot0"), {title: "", withButton: true});
+let A, B;
+$("#m-single").onclick = () => setMode(false);
+$("#m-compare").onclick = () => setMode(true);
+function setMode(cmp) {
+  $("#m-single").classList.toggle("on", !cmp); $("#m-compare").classList.toggle("on", cmp);
+  $("#single").style.display = cmp ? "none" : "grid";
+  $("#compare").style.display = cmp ? "grid" : "none";
+  $("#cmp-actions").style.display = cmp ? "flex" : "none";
+  if (cmp && !A) { A = panel($("#slotA"), {title: "Text A", withButton: false}); B = panel($("#slotB"), {title: "Text B", withButton: false}); }
+}
+$("#cmp-go").onclick = async (e) => {
+  const b = e.target; b.disabled = true; b.textContent = "Analyzing…";
+  await Promise.all([analyze(A), analyze(B)]);
+  b.disabled = false; b.textContent = "Analyze both";
+};
+</script>
+</body>
+</html>

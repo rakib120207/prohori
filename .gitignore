@@ -1,0 +1,12 @@
+venv/
+__pycache__/
+*.pyc
+.env
+data/raw/*
+data/own/*
+data/processed/*
+!data/raw/.gitkeep
+!data/own/.gitkeep
+!data/processed/.gitkeep
+.pytest_cache/
+# models/ is intentionally NOT ignored: Railway deploys the trained artifacts from git

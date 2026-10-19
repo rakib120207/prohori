@@ -1,0 +1,11 @@
+# Runtime + training. Deliberately slim: no bnlp, no shap, no numba (see prohori/bntok.py).
+numpy>=1.26
+scipy>=1.11
+pandas>=2.2
+scikit-learn>=1.5
+xgboost-cpu>=2.1; sys_platform == "linux"   # CPU-only build: avoids ~300 MB of CUDA libraries
+xgboost>=2.1; sys_platform != "linux"
+nltk>=3.9
+joblib>=1.4
+fastapi>=0.110
+uvicorn>=0.30

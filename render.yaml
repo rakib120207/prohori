@@ -1,0 +1,11 @@
+# Render Blueprint (optional: only needed if you deploy from the Render dashboard instead of through Claude)
+services:
+  - type: web
+    name: prohori
+    runtime: docker
+    plan: free
+    region: singapore
+    healthCheckPath: /health
+    envVars:
+      - key: ALLOWED_ORIGINS
+        value: "*"

@@ -1,0 +1,217 @@
+{
+  "version": "prohori-v1.1",
+  "trained_at": "2026-10-12T22:42:02",
+  "feature_names": [
+    "burstiness",
+    "perplexity",
+    "ttr",
+    "stopword_ratio",
+    "punct_ratio",
+    "avg_word_len",
+    "mean_sent",
+    "max_sent",
+    "hapax",
+    "yule_k",
+    "entropy",
+    "long_word",
+    "comma",
+    "danda",
+    "quote",
+    "digit",
+    "colon",
+    "dash",
+    "paren",
+    "conj",
+    "surface_pattern"
+  ],
+  "bands": {
+    "low": 0.35,
+    "high": 0.65
+  },
+  "n_rows": 1585,
+  "n_train": 1268,
+  "n_test": 317,
+  "refit_on_all_data": true,
+  "exclude_sources": [
+    "wikisource"
+  ],
+  "label_balance": {
+    "1": 799,
+    "0": 786
+  },
+  "origins": {
+    "seed": 1585
+  },
+  "metrics": {
+    "accuracy": 0.7570977917981072,
+    "roc_auc": 0.8509554140127389,
+    "ai_precision": 0.782312925170068,
+    "ai_recall": 0.71875,
+    "human_recall": 0.7961783439490446,
+    "confusion_matrix": {
+      "rows": "true [human, ai]",
+      "cols": "pred [human, ai]",
+      "values": [
+        [
+          125,
+          32
+        ],
+        [
+          45,
+          115
+        ]
+      ]
+    },
+    "human_false_positive_rate_at": {
+      "0.5": 0.20382165605095542,
+      "0.65": 0.15286624203821655,
+      "0.8": 0.11464968152866242
+    },
+    "report": {
+      "human": {
+        "precision": 0.7352941176470589,
+        "recall": 0.7961783439490446,
+        "f1-score": 0.764525993883792,
+        "support": 157.0
+      },
+      "ai": {
+        "precision": 0.782312925170068,
+        "recall": 0.71875,
+        "f1-score": 0.749185667752443,
+        "support": 160.0
+      },
+      "accuracy": 0.7570977917981072,
+      "macro avg": {
+        "precision": 0.7588035214085634,
+        "recall": 0.7574641719745223,
+        "f1-score": 0.7568558308181175,
+        "support": 317.0
+      },
+      "weighted avg": {
+        "precision": 0.7590260078794926,
+        "recall": 0.7570977917981072,
+        "f1-score": 0.7567832425241205,
+        "support": 317.0
+      }
+    },
+    "accuracy_by_origin": {
+      "seed": {
+        "n": 317,
+        "accuracy": 0.7570977917981072
+      }
+    },
+    "correct_rate_by_source": {
+      "human:textbook": {
+        "n": 111,
+        "correct_rate": 0.8288288288288288
+      },
+      "human:wikinews": {
+        "n": 46,
+        "correct_rate": 0.717391304347826
+      },
+      "ai:chatgpt": {
+        "n": 46,
+        "correct_rate": 0.8260869565217391
+      },
+      "ai:claude": {
+        "n": 13,
+        "correct_rate": 0.7692307692307693
+      },
+      "ai:deepseek": {
+        "n": 57,
+        "correct_rate": 0.5087719298245614
+      },
+      "ai:gemini": {
+        "n": 44,
+        "correct_rate": 0.8636363636363636
+      }
+    }
+  },
+  "reference": {
+    "burstiness": {
+      "human_median": 4.079215610874227,
+      "ai_median": 4.301162633521313
+    },
+    "perplexity": {
+      "human_median": 1000.0,
+      "ai_median": 1000.0
+    },
+    "ttr": {
+      "human_median": 0.8681727904667329,
+      "ai_median": 0.8860759493670886
+    },
+    "stopword_ratio": {
+      "human_median": 0.2962962962962963,
+      "ai_median": 0.28846153846153844
+    },
+    "punct_ratio": {
+      "human_median": 0.1095890410958904,
+      "ai_median": 0.0945945945945946
+    },
+    "avg_word_len": {
+      "human_median": 5.454545454545454,
+      "ai_median": 5.48
+    },
+    "mean_sent": {
+      "human_median": 13.75,
+      "ai_median": 19.333333333333332
+    },
+    "max_sent": {
+      "human_median": 20.0,
+      "ai_median": 26.0
+    },
+    "hapax": {
+      "human_median": 0.7604347826086957,
+      "ai_median": 0.7948717948717948
+    },
+    "yule_k": {
+      "human_median": 57.051314651884255,
+      "ai_median": 43.82761139517896
+    },
+    "entropy": {
+      "human_median": 3.730562907418966,
+      "ai_median": 3.876820152043732
+    },
+    "long_word": {
+      "human_median": 0.18893421723610404,
+      "ai_median": 0.2
+    },
+    "comma": {
+      "human_median": 0.46029980401504317,
+      "ai_median": 0.5594405594405595
+    },
+    "danda": {
+      "human_median": 1.246494356010286,
+      "ai_median": 0.8571428571428572
+    },
+    "quote": {
+      "human_median": 0.0,
+      "ai_median": 0.0
+    },
+    "digit": {
+      "human_median": 0.0,
+      "ai_median": 0.0
+    },
+    "colon": {
+      "human_median": 0.0,
+      "ai_median": 0.0
+    },
+    "dash": {
+      "human_median": 0.0,
+      "ai_median": 0.0
+    },
+    "paren": {
+      "human_median": 0.0,
+      "ai_median": 0.0
+    },
+    "conj": {
+      "human_median": 0.029411764705882353,
+      "ai_median": 0.037037037037037035
+    },
+    "surface_pattern": {
+      "human_median": -0.43435591417863356,
+      "ai_median": 0.5121308974325607
+    }
+  },
+  "train_seconds": 18.7
+}
