@@ -1,0 +1,200 @@
+{
+  "n_rows": 1585,
+  "n_pairs": 800,
+  "folds": 5,
+  "pooled": {
+    "accuracy": 0.8082018927444795,
+    "roc_auc": 0.891627415949326,
+    "ai_precision": 0.8331090174966352,
+    "ai_recall": 0.7747183979974969,
+    "human_recall": 0.8422391857506362,
+    "confusion_matrix": {
+      "rows": "true [human, ai]",
+      "cols": "pred [human, ai]",
+      "values": [
+        [
+          662,
+          124
+        ],
+        [
+          180,
+          619
+        ]
+      ]
+    },
+    "human_false_positive_rate_at": {
+      "0.5": 0.15776081424936386,
+      "0.8": 0.03816793893129771
+    },
+    "report": {
+      "human": {
+        "precision": 0.7862232779097387,
+        "recall": 0.8422391857506362,
+        "f1-score": 0.8132678132678133,
+        "support": 786.0
+      },
+      "ai": {
+        "precision": 0.8331090174966352,
+        "recall": 0.7747183979974969,
+        "f1-score": 0.8028534370946823,
+        "support": 799.0
+      },
+      "accuracy": 0.8082018927444795,
+      "macro avg": {
+        "precision": 0.809666147703187,
+        "recall": 0.8084787918740666,
+        "f1-score": 0.8080606251812478,
+        "support": 1585.0
+      },
+      "weighted avg": {
+        "precision": 0.8098584236068557,
+        "recall": 0.8082018927444795,
+        "f1-score": 0.8080179163830614,
+        "support": 1585.0
+      }
+    },
+    "accuracy_by_origin": {
+      "seed": {
+        "n": 1585,
+        "accuracy": 0.8082018927444795
+      }
+    },
+    "correct_rate_by_source": {
+      "human:textbook": {
+        "n": 548,
+        "correct_rate": 0.8905109489051095
+      },
+      "human:wikinews": {
+        "n": 238,
+        "correct_rate": 0.7310924369747899
+      },
+      "ai:chatgpt": {
+        "n": 195,
+        "correct_rate": 0.8051282051282052
+      },
+      "ai:claude": {
+        "n": 79,
+        "correct_rate": 0.8734177215189873
+      },
+      "ai:deepseek": {
+        "n": 287,
+        "correct_rate": 0.6306620209059234
+      },
+      "ai:gemini": {
+        "n": 238,
+        "correct_rate": 0.8907563025210085
+      }
+    },
+    "by_length": {
+      "under 40 words": {
+        "n": 400,
+        "accuracy": 0.75,
+        "human_false_flag_rate": 0.017
+      },
+      "40-60 words": {
+        "n": 545,
+        "accuracy": 0.752,
+        "human_false_flag_rate": 0.079
+      },
+      "60-90 words": {
+        "n": 459,
+        "accuracy": 0.88,
+        "human_false_flag_rate": 0.025
+      },
+      "over 90 words": {
+        "n": 181,
+        "accuracy": 0.923,
+        "human_false_flag_rate": 0.0
+      }
+    },
+    "selective": [
+      {
+        "min_confidence": 0.5,
+        "coverage": 1.0,
+        "accuracy_when_answering": 0.808
+      },
+      {
+        "min_confidence": 0.6,
+        "coverage": 0.886,
+        "accuracy_when_answering": 0.839
+      },
+      {
+        "min_confidence": 0.7,
+        "coverage": 0.769,
+        "accuracy_when_answering": 0.877
+      },
+      {
+        "min_confidence": 0.8,
+        "coverage": 0.618,
+        "accuracy_when_answering": 0.914
+      },
+      {
+        "min_confidence": 0.9,
+        "coverage": 0.432,
+        "accuracy_when_answering": 0.958
+      }
+    ]
+  },
+  "long_text_simulation": {
+    "note": "SYNTHETIC: k unrelated same-label texts concatenated. Easier than a real essay; treat as an optimistic bound.",
+    "3": {
+      "avg_words": 175,
+      "whole_block": {
+        "accuracy": 0.917,
+        "human_false_flag_rate": 0.04
+      },
+      "chunked": {
+        "accuracy": 0.95,
+        "human_false_flag_rate": 0.005
+      }
+    },
+    "6": {
+      "avg_words": 354,
+      "whole_block": {
+        "accuracy": 0.918,
+        "human_false_flag_rate": 0.04
+      },
+      "chunked": {
+        "accuracy": 0.988,
+        "human_false_flag_rate": 0.0
+      }
+    },
+    "10": {
+      "avg_words": 601,
+      "whole_block": {
+        "accuracy": 0.917,
+        "human_false_flag_rate": 0.035
+      },
+      "chunked": {
+        "accuracy": 0.995,
+        "human_false_flag_rate": 0.0
+      }
+    }
+  },
+  "unseen_generator": {
+    "chatgpt": {
+      "n_ai": 195,
+      "ai_caught_when_unseen": 0.595,
+      "ai_caught_when_seen_in_training": 0.805,
+      "human_correct_on_twins": 0.885
+    },
+    "claude": {
+      "n_ai": 79,
+      "ai_caught_when_unseen": 0.848,
+      "ai_caught_when_seen_in_training": 0.873,
+      "human_correct_on_twins": 0.818
+    },
+    "deepseek": {
+      "n_ai": 287,
+      "ai_caught_when_unseen": 0.387,
+      "ai_caught_when_seen_in_training": 0.631,
+      "human_correct_on_twins": 0.872
+    },
+    "gemini": {
+      "n_ai": 238,
+      "ai_caught_when_unseen": 0.819,
+      "ai_caught_when_seen_in_training": 0.891,
+      "human_correct_on_twins": 0.778
+    }
+  }
+}
