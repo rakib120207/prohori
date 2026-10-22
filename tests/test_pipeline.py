@@ -121,3 +121,57 @@ def test_english_file_in_raw_dir_is_skipped(tmp_path):
     assert "SKIPPING english.xlsx" in res.stdout
     ds = pd.read_csv(out)
     assert len(ds) == 60 and ds["text"].str.contains("english").sum() == 0
+
+
+def test_chunking_and_evidence_levels():
+    from prohori.model import evidence_for, split_chunks
+
+    sent = "আমরা সবাই মিলে আজ বাজারে যাব এবং নতুন বই কিনব।"
+    short = " ".join([sent] * 3)
+    long = " ".join([sent] * 40)
+    assert split_chunks(short) == [short]  # under 100 words: one block
+    chunks = split_chunks(long)
+    assert len(chunks) > 3 and all(len(c.split()) >= 25 for c in chunks)
+    assert " ".join(chunks).split() == long.split()  # nothing lost or duplicated
+    assert [evidence_for(w)["key"] for w in (20, 60, 150, 400)] == ["very_low", "low", "moderate", "high"]
+
+
+def test_long_text_is_scored_in_passages_and_short_text_is_not_flagged(trained, monkeypatch):
+    from fastapi.testclient import TestClient
+
+    monkeypatch.setenv("MODEL_DIR", str(trained / "models"))
+    import importlib
+    import api.main as main
+
+    importlib.reload(main)
+    df = pd.read_csv(trained / "dataset.csv")
+    long_text = " ".join(df[df["label"] == 1]["text"].iloc[:6])
+    with TestClient(main.app) as client:
+        j = client.post("/analyze", json={"text": long_text}).json()
+        assert len(j["chunks"]) >= 3 and j["evidence"]["chunks"] == len(j["chunks"])
+        assert all(0 <= c["probability"] <= 1 for c in j["chunks"])
+        short = " ".join(df["text"].iloc[0].split()[:30])
+        k = client.post("/analyze", json={"text": short}).json()
+        assert k["evidence"]["key"] == "very_low" and k["band"]["key"] == "inconclusive"  # never flags under 50 words
+
+
+def test_canonicalization_removes_cosmetic_differences():
+    from prohori.canon import canonicalize as c
+
+    formal = "তিনি বললেন, “আমি কোনো ভালো কাজ করিনি” — তাঁর সঙ্গে এই বইটি ২০২৪ সালে হিসেবে ধরা হয়।"
+    casual = 'তিনি বললেন, "আমি কোন ভাল কাজ করিনি" - তার সাথে এ বইটা 2024 সালে হিসাবে ধরা হয় ।'
+    assert c(formal) == c(casual)
+    assert c("বইগুলি") == c("বইগুলো") and c("কি হল") == c("কী হলো")
+    assert c("") == "" and c("আমি যাব") == "আমি যাব"  # untouched text stays untouched
+
+
+def test_scores_do_not_change_when_only_spelling_and_typography_change(trained):
+    from prohori.model import Predictor
+
+    pred = Predictor(trained / "models")
+    df = pd.read_csv(trained / "dataset.csv")
+    text = df["text"].iloc[3]
+    polished = text.replace(" - ", " — ").replace("'", "’").replace("কোনো", "কোন")
+    a = pred.scorer.score_text(text).probability
+    b = pred.scorer.score_text(polished + " ").probability
+    assert abs(a - b) < 1e-9

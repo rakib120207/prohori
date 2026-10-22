@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Prohori settings</title>
+<style>
+  body{background:#0b0d12;color:#e8ecf3;font:15px/1.6 -apple-system,"Segoe UI",sans-serif;max-width:620px;margin:40px auto;padding:0 20px}
+  h1{letter-spacing:.12em;font-size:20px}h1 span{color:#7c9cff;letter-spacing:0;margin-left:8px;font-weight:500}
+  input{width:100%;padding:10px;border-radius:9px;border:1px solid #232b3a;background:#171c27;color:#e8ecf3;font-size:14px;box-sizing:border-box}
+  button{background:#7c9cff;color:#08101f;border:0;border-radius:9px;padding:9px 16px;font-weight:600;cursor:pointer;margin:10px 8px 0 0}
+  button.g{background:none;color:#8d98ab;border:1px solid #232b3a}
+  .m{color:#8d98ab;font-size:13px}#msg{margin-top:12px;min-height:22px}.ok{color:#4ade9a}.bad{color:#ff9a9a}
+  ul{color:#8d98ab;font-size:13px}
+</style></head><body>
+<h1>PROHORI<span>প্রহরী</span></h1>
+<p><b>Server address</b></p>
+<input id="url" spellcheck="false">
+<div><button id="save">Save</button><button class="g" id="test">Test connection</button><button class="g" id="reset">Reset to default</button></div>
+<div id="msg"></div>
+<h3>Privacy</h3>
+<ul>
+  <li>Nothing is read from a page or sent anywhere until you right-click a selection, press <b>Alt+Shift+P</b>, or press Analyze.</li>
+  <li>The text you check is sent only to the server address above, to be scored. This extension does not store it and has no analytics.</li>
+  <li>The default server is the public Prohori demo on Render's free plan: it sleeps when idle and the first check can take up to a minute.</li>
+  <li>For sensitive text, run your own server (see the project README) and put its address here.</li>
+</ul>
+<script src="options.js"></script></body></html>

@@ -46,6 +46,9 @@ def main():
     print(f"AI-class precision: {m['ai_precision']:.3f}   <- watch this: 1 - precision is how often a 'flag' is wrong")
     print(f"human false-positive rate at thresholds: {json.dumps(m['human_false_positive_rate_at'])}")
     print(f"accuracy by origin: {json.dumps(m['accuracy_by_origin'])}")
+    print("\nby text length (held-out):")
+    for k, v in m["by_length"].items():
+        print(f"  {k:16} n={v['n']:4} accuracy={v['accuracy']:.3f} human false-flag={v['human_false_flag_rate']}")
     print("\nper-source correct rate (human: how often real writing is left alone; ai: how often that generator is caught):")
     for k, v in sorted(m["correct_rate_by_source"].items()):
         print(f"  {k:28} n={v['n']:4}  {v['correct_rate']:.3f}")

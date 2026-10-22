@@ -23,6 +23,7 @@ from nltk.lm import Laplace
 from nltk.lm.preprocessing import pad_both_ends, padded_everygram_pipeline
 from nltk.util import ngrams
 
+from .canon import canonicalize
 from .bntok import PUNCTUATIONS, STOPWORDS as _STOPWORDS, NLTKTokenizer
 
 # The spec's six features first, then extra explainable stylometric features that
@@ -70,7 +71,7 @@ class Doc:
 
 
 def tokenize(text: str) -> Doc:
-    text = (text or "").strip()
+    text = canonicalize(text or "")  # cosmetic differences must never reach a feature (see canon.py)
     if not text:
         return Doc(words=[], sent_lens=[], text="")
     sents = _tokenizer.sentence_tokenize(text)

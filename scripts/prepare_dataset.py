@@ -85,8 +85,14 @@ def main():
     for path in own_files:
         print(f"\n== own-domain file: {path.name}")
         df = read_table(path)
-        # own files are written by our scripts, labels are already 0/1
-        part = keep_bangla_only(normalize_table(df, "own", ai_label="1", verbose=True), path.name)
+        if set(CANONICAL_COLUMNS) <= set(df.columns):  # already canonical (written by add_dataset.py): keep its origin tag
+            part = df[CANONICAL_COLUMNS].copy()
+            part["label"] = part["label"].astype(int)
+            part["pair_id"] = part["pair_id"].astype(str)
+            print(f"  already canonical: {len(part)} rows, origin(s) {sorted(part['origin'].astype(str).unique())}")
+        else:  # written by generate_ai_rewrites.py: labels are already 0/1
+            part = normalize_table(df, "own", ai_label="1", verbose=True)
+        part = keep_bangla_only(part, path.name)
         if part is not None:
             parts.append(part)
 

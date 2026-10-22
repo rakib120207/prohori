@@ -41,6 +41,8 @@ def main():
     ap.add_argument("--max-len", type=int, default=256)
     ap.add_argument("--test-size", type=float, default=0.2)
     ap.add_argument("--seed", type=int, default=42)
+    ap.add_argument("--exclude-sources", nargs="*", default=["wikisource"],
+                    help="drop pairs whose HUMAN text came from these sources (must match train.py)")
     args = ap.parse_args()
 
     import torch
@@ -50,6 +52,11 @@ def main():
                               DataCollatorWithPadding, Trainer, TrainingArguments)
 
     df = pd.read_csv(args.data).reset_index(drop=True)
+    if args.exclude_sources:  # same pair-level exclusion as prohori.model.exclude_pairs_by_source
+        want = {x.lower() for x in args.exclude_sources}
+        hs = df[df["label"] == 0].set_index("pair_id")["source"].astype(str).str.lower()
+        df = df[~df["pair_id"].isin(set(hs[hs.isin(want)].index))].reset_index(drop=True)
+        print(f"after excluding {sorted(want)}: {len(df)} rows")
     splitter = GroupShuffleSplit(n_splits=1, test_size=args.test_size, random_state=args.seed)
     tr_idx, te_idx = next(splitter.split(df, df["label"], groups=df["pair_id"]))  # same as prohori.model.group_split
     train_df, test_df = df.iloc[tr_idx].copy(), df.iloc[te_idx].copy()

@@ -59,6 +59,13 @@ textarea:focus{border-color:var(--accent)}
 .disc{margin-top:14px;color:var(--muted);font-size:12px;border-left:2px solid var(--line);padding-left:10px}
 details{margin-top:12px;color:var(--muted);font-size:12px}
 details table{margin-top:6px;border-collapse:collapse}details td{padding:2px 14px 2px 0}
+.ev{display:inline-block;font-size:11px;font-weight:600;padding:2px 9px;border-radius:99px;margin-top:8px;background:var(--panel2);border:1px solid var(--line);color:var(--muted)}
+.ev.high{color:var(--human)}.ev.moderate{color:var(--accent)}.ev.low,.ev.very_low{color:var(--mid)}
+.pass{border-left:3px solid var(--line);padding:6px 10px;margin:6px 0;border-radius:0 8px 8px 0;font-size:14px;line-height:1.7;background:var(--panel2)}
+.pass small{display:block;color:var(--muted);font-size:11px;margin-bottom:2px}
+.acc table{width:100%;border-collapse:collapse;margin:6px 0 10px}.acc td,.acc th{padding:3px 8px 3px 0;text-align:left;font-size:12.5px;font-weight:400}.acc th{color:var(--muted)}
+.acc h4{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:12px 0 4px;font-weight:600}
+.acc .lim{color:#e9d58a}
 footer{margin-top:34px;color:var(--muted);font-size:12px}
 </style>
 </head>
@@ -85,6 +92,8 @@ footer{margin-top:34px;color:var(--muted);font-size:12px}
     <button class="btn" id="cmp-go">Analyze both</button>
   </div>
 
+  <details class="card acc" style="margin-top:16px" id="acc"><summary style="cursor:pointer;font-weight:600">How accurate is this? (measured, not claimed)</summary><div id="acc-body" class="count" style="margin-top:8px">Loading…</div></details>
+
   <footer>
     Built on sentence rhythm, predictability and vocabulary statistics + XGBoost + SHAP. No language model is called when you press Analyze.
     False positives are possible at any threshold: use a high score to start a conversation, not to accuse.
@@ -102,7 +111,7 @@ function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&l
 function panel(root, {title, withButton}) {
   root.innerHTML = `
     ${title ? `<div class="count" style="margin-bottom:8px">${esc(title)}</div>` : ""}
-    <textarea placeholder="এখানে বাংলা লেখা পেস্ট করুন…  (Paste Bangla text here — 50+ words works best)"></textarea>
+    <textarea placeholder="এখানে বাংলা লেখা পেস্ট করুন…  (Paste Bangla text here — 100+ words gives a much steadier reading)"></textarea>
     <div class="row">
       <span class="count"><span class="wc">0</span> words</span>
       <span>
@@ -137,6 +146,8 @@ async function analyze(p, btn) {
   }
 }
 
+function passColor(p){ return p >= 0.8 ? "var(--ai)" : p <= 0.2 ? "var(--human)" : p >= 0.5 ? "#c98f4d" : "#6fae8a"; }
+
 function render(j) {
   const pct = Math.round(j.ai_probability * 100);
   const color = j.band.key === "review" ? "var(--ai)" : j.band.key === "human_like" ? "var(--human)" : "var(--mid)";
@@ -150,21 +161,57 @@ function render(j) {
     </div>`).join("");
   const warns = j.warnings.map(w => `<div class="warn">${esc(w)}</div>`).join("");
   const feats = Object.entries(j.features).map(([k, v]) => `<tr><td>${esc(k)}</td><td>${v}</td></tr>`).join("");
+  const passages = (j.chunks && j.chunks.length) ? `
+    <div class="why"><h3>Passage by passage</h3>
+      <p class="count" style="margin-bottom:6px">${esc(j.chunk_note || "")}</p>
+      ${j.chunks.map((c, i) => `<div class="pass" style="border-left-color:${passColor(c.probability)}"><small>Passage ${i + 1} · ${c.words} words · ${Math.round(c.probability * 100)}% AI-likelihood</small>${esc(c.text)}</div>`).join("")}
+    </div>` : "";
   return `
   <div class="result">
     <div class="gauge">
       <div class="ring" style="--c:${color}"><div><span><b>${pct}%</b><small>AI-LIKELIHOOD</small></span></div></div>
       <div><div class="band" style="color:${color}">${esc(j.band.label)}</div><div class="detail">${esc(j.band.detail)}</div>
-      <div class="count" style="margin-top:6px">${j.stats.words} words · ${j.stats.sentences} sentences</div></div>
+      <span class="ev ${j.evidence.key}" title="${esc(j.evidence.detail)}">${esc(j.evidence.label)} · ${j.stats.words} words${j.evidence.chunks > 1 ? " · " + j.evidence.chunks + " passages" : ""}</span></div>
     </div>
     ${warns}
     <div class="why"><h3>Why this score</h3>${reasons}</div>
+    ${passages}
     <details><summary>All measured features</summary><table>${feats}</table></details>
     <div class="disc">${esc(j.disclaimer)}</div>
   </div>`;
 }
 
+// ----- measured accuracy panel (numbers come from the model's own cross-validation report) -----
+async function loadAccuracy() {
+  const box = $("#acc-body");
+  try {
+    const r = await fetch(`${API}/model-info`);
+    if (!r.ok) throw new Error();
+    const m = await r.json();
+    const cv = m.cv_report, p = cv ? cv.pooled : m.metrics;
+    const pc = x => Math.round(x * 100) + "%";
+    const len = Object.entries(p.by_length || {}).map(([k, v]) => `<tr><td>${esc(k)}</td><td>${pc(v.accuracy)}</td><td>${v.human_false_flag_rate == null ? "–" : pc(v.human_false_flag_rate)}</td></tr>`).join("");
+    const sel = (p.selective || []).filter(x => [0.7, 0.8, 0.9].includes(x.min_confidence)).map(x => `<tr><td>${Math.round(x.min_confidence * 100)}%+</td><td>${pc(x.coverage)}</td><td>${pc(x.accuracy_when_answering)}</td></tr>`).join("");
+    const un = cv && cv.unseen_generator ? Object.entries(cv.unseen_generator).map(([g, v]) => `<tr><td>${esc(g)}</td><td>${pc(v.ai_caught_when_seen_in_training)}</td><td>${pc(v.ai_caught_when_unseen)}</td></tr>`).join("") : "";
+    const ud = cv && cv.unseen_domain ? Object.entries(cv.unseen_domain).map(([g, v]) => `<tr><td>${esc(g)}</td><td>${pc(v.accuracy_when_seen_in_training)}</td><td>${pc(v.accuracy_when_unseen)}</td><td>${pc(v["human_flagged_at_0.8_when_unseen"])}</td></tr>`).join("") : "";
+    const ls = cv && cv.long_text_simulation ? Object.entries(cv.long_text_simulation).filter(([k]) => k !== "note").map(([k, v]) => `<tr><td>~${v.avg_words} words</td><td>${pc(v.chunked.accuracy)}</td><td>${pc(v.chunked.human_false_flag_rate)}</td></tr>`).join("") : "";
+    box.innerHTML = `
+      <p>${cv ? `Measured with ${cv.folds}-fold cross-validation on ${cv.n_rows} Bangla texts (${cv.n_pairs} human/AI pairs, modern Bangla only). Pairs are never split between training and testing.` : "Measured on a held-out test set."}
+      Overall accuracy: <b>${pc(p.accuracy)}</b>.</p>
+      <h4>By text length</h4><table><tr><th>Length</th><th>Accuracy</th><th>Real human text flagged</th></tr>${len}</table>
+      ${sel ? `<h4>When it only answers if it is confident</h4><table><tr><th>Confidence</th><th>Texts covered</th><th>Right when it answers</th></tr>${sel}</table>` : ""}
+      ${un ? `<h4 class="lim">Honest limit: AI models it has never seen</h4><table><tr><th>Generator</th><th>Caught (seen in training)</th><th>Caught (never seen)</th></tr>${un}</table>` : ""}
+      ${ud ? `<h4 class="lim">Honest limit: kinds of human text it has never seen</h4><table><tr><th>Domain held out</th><th>Accuracy (seen)</th><th>Accuracy (never seen)</th><th>Human text flagged</th></tr>${ud}</table>` : ""}
+      ${ls ? `<h4>Long texts (synthetic test, optimistic)</h4><table><tr><th>Length</th><th>Accuracy</th><th>Human flagged</th></tr>${ls}</table>` : ""}
+      <p class="count">Texts come from one dataset (textbooks and news, rewritten by four AI models). Spelling and typography differences are neutralized before scoring, so polished writing is not mistaken for AI. Your own students' writing may behave differently; that is why local calibration data matters.</p>`;
+  } catch (e) {
+    box.textContent = "The accuracy report is not available right now.";
+  }
+}
+let accLoaded = false;
+
 // ----- wiring -----
+$("#acc").addEventListener("toggle", e => { if (e.target.open && !accLoaded) { accLoaded = true; loadAccuracy(); } });
 const single = panel($("#slot0"), {title: "", withButton: true});
 let A, B;
 $("#m-single").onclick = () => setMode(false);

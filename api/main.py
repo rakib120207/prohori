@@ -64,8 +64,11 @@ def health():
 
 @app.get("/model-info")
 def model_info():
-    meta = _predictor().meta
-    return {k: meta[k] for k in ("version", "trained_at", "n_rows", "n_train", "n_test", "label_balance", "origins", "metrics", "bands")}
+    pred = _predictor()
+    meta = pred.meta
+    out = {k: meta[k] for k in ("version", "trained_at", "n_rows", "n_train", "n_test", "label_balance", "origins", "metrics", "bands")}
+    out["cv_report"] = pred.cv_report  # robust cross-validated numbers, if models/cv_report.json exists
+    return out
 
 
 @app.post("/analyze")

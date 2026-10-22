@@ -3,135 +3,135 @@
   "n_pairs": 800,
   "folds": 5,
   "pooled": {
-    "accuracy": 0.8082018927444795,
-    "roc_auc": 0.891627415949326,
-    "ai_precision": 0.8331090174966352,
-    "ai_recall": 0.7747183979974969,
-    "human_recall": 0.8422391857506362,
+    "accuracy": 0.7652996845425868,
+    "roc_auc": 0.8472868439238617,
+    "ai_precision": 0.7889039242219216,
+    "ai_recall": 0.7296620775969962,
+    "human_recall": 0.8015267175572519,
     "confusion_matrix": {
       "rows": "true [human, ai]",
       "cols": "pred [human, ai]",
       "values": [
         [
-          662,
-          124
+          630,
+          156
         ],
         [
-          180,
-          619
+          216,
+          583
         ]
       ]
     },
     "human_false_positive_rate_at": {
-      "0.5": 0.15776081424936386,
-      "0.8": 0.03816793893129771
+      "0.5": 0.1984732824427481,
+      "0.8": 0.04071246819338423
     },
     "report": {
       "human": {
-        "precision": 0.7862232779097387,
-        "recall": 0.8422391857506362,
-        "f1-score": 0.8132678132678133,
+        "precision": 0.7446808510638298,
+        "recall": 0.8015267175572519,
+        "f1-score": 0.7720588235294118,
         "support": 786.0
       },
       "ai": {
-        "precision": 0.8331090174966352,
-        "recall": 0.7747183979974969,
-        "f1-score": 0.8028534370946823,
+        "precision": 0.7889039242219216,
+        "recall": 0.7296620775969962,
+        "f1-score": 0.7581274382314694,
         "support": 799.0
       },
-      "accuracy": 0.8082018927444795,
+      "accuracy": 0.7652996845425868,
       "macro avg": {
-        "precision": 0.809666147703187,
-        "recall": 0.8084787918740666,
-        "f1-score": 0.8080606251812478,
+        "precision": 0.7667923876428757,
+        "recall": 0.765594397577124,
+        "f1-score": 0.7650931308804406,
         "support": 1585.0
       },
       "weighted avg": {
-        "precision": 0.8098584236068557,
-        "recall": 0.8082018927444795,
-        "f1-score": 0.8080179163830614,
+        "precision": 0.7669737440943127,
+        "recall": 0.7652996845425868,
+        "f1-score": 0.7650359990164427,
         "support": 1585.0
       }
     },
     "accuracy_by_origin": {
       "seed": {
         "n": 1585,
-        "accuracy": 0.8082018927444795
+        "accuracy": 0.7652996845425868
       }
     },
     "correct_rate_by_source": {
       "human:textbook": {
         "n": 548,
-        "correct_rate": 0.8905109489051095
+        "correct_rate": 0.864963503649635
       },
       "human:wikinews": {
         "n": 238,
-        "correct_rate": 0.7310924369747899
+        "correct_rate": 0.6554621848739496
       },
       "ai:chatgpt": {
         "n": 195,
-        "correct_rate": 0.8051282051282052
+        "correct_rate": 0.8307692307692308
       },
       "ai:claude": {
         "n": 79,
-        "correct_rate": 0.8734177215189873
+        "correct_rate": 0.8481012658227848
       },
       "ai:deepseek": {
         "n": 287,
-        "correct_rate": 0.6306620209059234
+        "correct_rate": 0.519163763066202
       },
       "ai:gemini": {
         "n": 238,
-        "correct_rate": 0.8907563025210085
+        "correct_rate": 0.8613445378151261
       }
     },
     "by_length": {
       "under 40 words": {
         "n": 400,
-        "accuracy": 0.75,
-        "human_false_flag_rate": 0.017
+        "accuracy": 0.718,
+        "human_false_flag_rate": 0.038
       },
       "40-60 words": {
         "n": 545,
-        "accuracy": 0.752,
-        "human_false_flag_rate": 0.079
+        "accuracy": 0.708,
+        "human_false_flag_rate": 0.06
       },
       "60-90 words": {
         "n": 459,
-        "accuracy": 0.88,
+        "accuracy": 0.834,
         "human_false_flag_rate": 0.025
       },
       "over 90 words": {
         "n": 181,
-        "accuracy": 0.923,
-        "human_false_flag_rate": 0.0
+        "accuracy": 0.867,
+        "human_false_flag_rate": 0.024
       }
     },
     "selective": [
       {
         "min_confidence": 0.5,
         "coverage": 1.0,
-        "accuracy_when_answering": 0.808
+        "accuracy_when_answering": 0.765
       },
       {
         "min_confidence": 0.6,
-        "coverage": 0.886,
-        "accuracy_when_answering": 0.839
+        "coverage": 0.86,
+        "accuracy_when_answering": 0.804
       },
       {
         "min_confidence": 0.7,
-        "coverage": 0.769,
-        "accuracy_when_answering": 0.877
+        "coverage": 0.713,
+        "accuracy_when_answering": 0.844
       },
       {
         "min_confidence": 0.8,
-        "coverage": 0.618,
-        "accuracy_when_answering": 0.914
+        "coverage": 0.518,
+        "accuracy_when_answering": 0.884
       },
       {
         "min_confidence": 0.9,
-        "coverage": 0.432,
-        "accuracy_when_answering": 0.958
+        "coverage": 0.308,
+        "accuracy_when_answering": 0.943
       }
     ]
   },
@@ -140,33 +140,33 @@
     "3": {
       "avg_words": 175,
       "whole_block": {
-        "accuracy": 0.917,
-        "human_false_flag_rate": 0.04
+        "accuracy": 0.89,
+        "human_false_flag_rate": 0.045
       },
       "chunked": {
-        "accuracy": 0.95,
-        "human_false_flag_rate": 0.005
+        "accuracy": 0.902,
+        "human_false_flag_rate": 0.0
       }
     },
     "6": {
       "avg_words": 354,
       "whole_block": {
-        "accuracy": 0.918,
-        "human_false_flag_rate": 0.04
+        "accuracy": 0.89,
+        "human_false_flag_rate": 0.05
       },
       "chunked": {
-        "accuracy": 0.988,
+        "accuracy": 0.973,
         "human_false_flag_rate": 0.0
       }
     },
     "10": {
       "avg_words": 601,
       "whole_block": {
-        "accuracy": 0.917,
-        "human_false_flag_rate": 0.035
+        "accuracy": 0.888,
+        "human_false_flag_rate": 0.05
       },
       "chunked": {
-        "accuracy": 0.995,
+        "accuracy": 0.99,
         "human_false_flag_rate": 0.0
       }
     }
@@ -174,27 +174,43 @@
   "unseen_generator": {
     "chatgpt": {
       "n_ai": 195,
-      "ai_caught_when_unseen": 0.595,
-      "ai_caught_when_seen_in_training": 0.805,
-      "human_correct_on_twins": 0.885
+      "ai_caught_when_unseen": 0.626,
+      "ai_caught_when_seen_in_training": 0.831,
+      "human_correct_on_twins": 0.854
     },
     "claude": {
       "n_ai": 79,
       "ai_caught_when_unseen": 0.848,
-      "ai_caught_when_seen_in_training": 0.873,
-      "human_correct_on_twins": 0.818
+      "ai_caught_when_seen_in_training": 0.848,
+      "human_correct_on_twins": 0.727
     },
     "deepseek": {
       "n_ai": 287,
-      "ai_caught_when_unseen": 0.387,
-      "ai_caught_when_seen_in_training": 0.631,
-      "human_correct_on_twins": 0.872
+      "ai_caught_when_unseen": 0.282,
+      "ai_caught_when_seen_in_training": 0.519,
+      "human_correct_on_twins": 0.879
     },
     "gemini": {
       "n_ai": 238,
-      "ai_caught_when_unseen": 0.819,
-      "ai_caught_when_seen_in_training": 0.891,
-      "human_correct_on_twins": 0.778
+      "ai_caught_when_unseen": 0.79,
+      "ai_caught_when_seen_in_training": 0.861,
+      "human_correct_on_twins": 0.791
+    }
+  },
+  "unseen_domain": {
+    "textbook": {
+      "n": 1095,
+      "accuracy_when_unseen": 0.616,
+      "accuracy_when_seen_in_training": 0.81,
+      "human_correct_when_unseen": 0.558,
+      "human_flagged_at_0.8_when_unseen": 0.104
+    },
+    "wikinews": {
+      "n": 476,
+      "accuracy_when_unseen": 0.574,
+      "accuracy_when_seen_in_training": 0.67,
+      "human_correct_when_unseen": 0.387,
+      "human_flagged_at_0.8_when_unseen": 0.315
     }
   }
 }

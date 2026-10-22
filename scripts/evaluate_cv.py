@@ -50,6 +50,9 @@ def main():
     print("\nunseen generator (leave-one-out):")
     for g, v in rep["unseen_generator"].items():
         print(f"  {g:10} caught unseen {v['ai_caught_when_unseen']:.2f} vs seen {v['ai_caught_when_seen_in_training']:.2f}  (human twins correct {v['human_correct_on_twins']:.2f})")
+    print("\nunseen domain (leave-one-domain-out):")
+    for g, v in rep["unseen_domain"].items():
+        print(f"  {g:10} n={v['n']:4} accuracy unseen {v['accuracy_when_unseen']:.2f} vs seen {v['accuracy_when_seen_in_training']:.2f}  human flagged@0.8 when unseen {v['human_flagged_at_0.8_when_unseen']:.2f}")
     print("\nlong-text simulation (SYNTHETIC):")
     for k, v in rep["long_text_simulation"].items():
         if k == "note":
