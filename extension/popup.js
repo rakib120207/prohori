@@ -25,7 +25,7 @@ $("go").addEventListener("click", async () => {
   try {
     const r = await chrome.runtime.sendMessage({ type: "prohori:analyze", text });
     if (!r || !r.ok) show(UI.renderError((r && r.error) || "No response from the extension."));
-    else show(UI.renderResult(r.data, { fullReportUrl: r.fullReportUrl }));
+    else show(UI.safeResult(r.data, { fullReportUrl: r.fullReportUrl }));
   } catch (e) { show(UI.renderError(e.message)); }
   $("go").disabled = false;
 });

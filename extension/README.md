@@ -23,6 +23,13 @@ A card appears at the top right of the page with the probability, the evidence l
 
 The first check after a quiet period can take up to a minute because the free demo server sleeps when idle; the card says so while it waits.
 
+## If it does not work
+
+1. Open **Settings** (toolbar icon → Settings) and press **Run self-test**. It wakes the server, checks the model is loaded, shows the server version, and checks the reply has every field the extension displays. A server on an older version still works, but shows less.
+2. The server must be on the current version. If you updated GitHub, remember to press **Manual Deploy → Deploy latest commit** in Render.
+3. Still stuck? Open `chrome://extensions`, find Prohori, click **Errors** (if present) and click the **service worker** link under "Inspect views" to see the console; the red line there says what failed.
+4. On `file://` pages, turn on "Allow access to file URLs" in the extension's details. Restricted pages (`chrome://`, the Web Store) cannot be read by any extension.
+
 ## Privacy
 
 * The extension reads nothing and sends nothing until you trigger a check. It does **not** run on every page: it uses `activeTab` and injects its card only when you ask.

@@ -35,7 +35,7 @@
     const UI = window.ProhoriUI;
     if (msg.type === "prohori:loading") frame(UI.renderLoading(msg.message));
     else if (msg.type === "prohori:error") frame(UI.renderError(msg.message));
-    else if (msg.type === "prohori:result") frame(UI.renderResult(msg.data, { fullReportUrl: msg.fullReportUrl }));
+    else if (msg.type === "prohori:result") frame(UI.safeResult(msg.data, { fullReportUrl: msg.fullReportUrl }));
     else if (msg.type === "prohori:close") close();
   });
 })();

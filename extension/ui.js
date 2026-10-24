@@ -53,29 +53,36 @@
   function renderError(msg) {
     return h("div", { class: "ph-err" }, msg);
   }
+  // Works with every server version: missing optional fields (evidence, chunks, examples ...) are simply skipped.
   function renderResult(j, opts) {
     opts = opts || {};
+    if (!j || typeof j.ai_probability !== "number") throw new Error("The server's reply was not in the expected format.");
     const pct = Math.round(j.ai_probability * 100);
-    const color = bandColor(j.band.key);
+    const band = j.band || { key: "inconclusive", label: "Result", detail: "" };
+    const color = bandColor(band.key);
+    const words = (j.stats && j.stats.words) || (j.evidence && j.evidence.words) || null;
+    const ev = j.evidence;
+    const evText = ev && ev.label ? `${ev.label}${words ? " · " + words + " words" : ""}${ev.chunks > 1 ? " · " + ev.chunks + " passages" : ""}` : (words ? `${words} words` : "");
     const frag = h("div", {});
     const ring = h("div", { class: "ph-ring", style: `--c:${color}` }, h("div", {}, `${pct}%`));
     frag.append(
       h("div", { class: "ph-row" }, ring,
         h("div", {},
-          h("div", { class: "ph-band", style: `color:${color}` }, j.band.label),
-          h("div", { class: "ph-detail" }, j.band.detail),
-          h("span", { class: "ph-ev" }, `${j.evidence.label} · ${j.stats.words} words` + (j.evidence.chunks > 1 ? ` · ${j.evidence.chunks} passages` : "")))),
+          h("div", { class: "ph-band", style: `color:${color}` }, band.label),
+          band.detail ? h("div", { class: "ph-detail" }, band.detail) : null,
+          evText ? h("span", { class: "ph-ev" }, evText) : null)),
     );
     requestAnimationFrame(() => ring.style.setProperty("--p", String(pct)));
     for (const w of j.warnings || []) frag.append(h("div", { class: "ph-warn" }, w));
-    frag.append(h("div", { class: "ph-h" }, "Why this score"));
+    if ((j.reasons || []).length) frag.append(h("div", { class: "ph-h" }, "Why this score"));
     for (const r of j.reasons || []) {
+      const impact = typeof r.impact === "number" ? r.impact : 0;
       frag.append(
         h("div", { class: "ph-reason" },
-          h("div", { class: "ph-rtop" }, h("span", {}, r.label),
-            h("span", { class: `ph-chip ${r.direction}` }, `${r.direction === "ai" ? "toward AI-like" : "toward human-like"} · ${r.impact}%`)),
-          h("div", { class: "ph-bar" }, h("i", { style: `width:${Math.max(4, r.impact)}%;background:${r.direction === "ai" ? "var(--ai)" : "var(--human)"}` })),
-          h("p", { class: "ph-p" }, r.text),
+          h("div", { class: "ph-rtop" }, h("span", {}, r.label || r.feature || ""),
+            h("span", { class: `ph-chip ${r.direction === "ai" ? "ai" : "human"}` }, `${r.direction === "ai" ? "toward AI-like" : "toward human-like"} · ${impact}%`)),
+          h("div", { class: "ph-bar" }, h("i", { style: `width:${Math.max(4, impact)}%;background:${r.direction === "ai" ? "var(--ai)" : "var(--human)"}` })),
+          r.text ? h("p", { class: "ph-p" }, r.text) : null,
           r.examples && r.examples.length ? h("div", { class: "ph-ex" }, r.examples.map((e) => h("span", {}, e))) : null));
     }
     if (j.chunks && j.chunks.length) {
@@ -86,9 +93,14 @@
       }
       frag.append(d);
     }
-    frag.append(h("div", { class: "ph-disc" }, j.disclaimer));
+    if (j.disclaimer) frag.append(h("div", { class: "ph-disc" }, j.disclaimer));
     if (opts.fullReportUrl) frag.append(h("div", { style: "margin-top:8px" }, h("a", { class: "ph-link", href: opts.fullReportUrl, target: "_blank", rel: "noopener noreferrer" }, "Open the full app ›")));
     return frag;
   }
-  window.ProhoriUI = { CSS, h, renderLoading, renderError, renderResult };
+  // Never leave a spinner on screen: any rendering problem becomes a readable message.
+  function safeResult(j, opts) {
+    try { return renderResult(j, opts); }
+    catch (e) { return renderError((e && e.message) || "Could not display the result.") ; }
+  }
+  window.ProhoriUI = { CSS, h, renderLoading, renderError, renderResult, safeResult };
 })();

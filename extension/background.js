@@ -34,6 +34,8 @@ async function waitForServer(api) {
     } catch (e) {
       if (e.fatal) throw e;
     }
+    // Any extension API call resets the service worker's idle timer, so it is not shut down mid-wait.
+    try { await chrome.runtime.getPlatformInfo(); } catch (e) { /* ignore */ }
     await sleep(SLEEP_MS);
   }
   throw new Error("The server did not wake up in time. Wait a minute and try again.");
@@ -50,6 +52,7 @@ async function analyze(text) {
   }
   const j = await r.json().catch(() => ({}));
   if (!r.ok) throw new Error(typeof j.detail === "string" ? j.detail : `Request failed (${r.status}).`);
+  if (typeof j.ai_probability !== "number") throw new Error("The server returned an unexpected reply. Check the server address in Settings, or redeploy the server.");
   return { data: j, fullReportUrl: api + "/" };
 }
 
